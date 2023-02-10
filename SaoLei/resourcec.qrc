@@ -1,0 +1,29 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/0.png</file>
+        <file>images/1.png</file>
+        <file>images/2.png</file>
+        <file>images/3.png</file>
+        <file>images/4.png</file>
+        <file>images/5.png</file>
+        <file>images/6.png</file>
+        <file>images/7.png</file>
+        <file>images/8.png</file>
+        <file>images/blast1.png</file>
+        <file>images/bong.wav</file>
+        <file>images/cover1.png</file>
+        <file>images/error0.png</file>
+        <file>images/error1.png</file>
+        <file>images/fail.wav</file>
+        <file>images/flag1.png</file>
+        <file>images/flag2.png</file>
+        <file>images/mine0.png</file>
+        <file>images/mine1.png</file>
+        <file>images/minetip1.png</file>
+        <file>images/press.png</file>
+        <file>images/smile.png</file>
+        <file>images/time.wav</file>
+        <file>images/win.wav</file>
+        <file>images/picture1.ico</file>
+    </qresource>
+</RCC>
