@@ -1,0 +1,34 @@
+<RCC>
+    <qresource prefix="/new/prefix1">
+        <file>QIcon/images/001.GIF</file>
+        <file>QIcon/images/5.ico</file>
+        <file>QIcon/images/22.ico</file>
+        <file>QIcon/images/23.ico</file>
+        <file>QIcon/images/110.JPG</file>
+        <file>QIcon/images/132.bmp</file>
+        <file>QIcon/images/212.bmp</file>
+        <file>QIcon/images/214.bmp</file>
+        <file>QIcon/images/224.bmp</file>
+        <file>QIcon/images/237.GIF</file>
+        <file>QIcon/images/316.bmp</file>
+        <file>QIcon/images/318.bmp</file>
+        <file>QIcon/images/430.bmp</file>
+        <file>QIcon/images/610.bmp</file>
+        <file>QIcon/images/612.bmp</file>
+        <file>QIcon/images/616.bmp</file>
+        <file>QIcon/images/620.bmp</file>
+        <file>QIcon/images/622.bmp</file>
+        <file>QIcon/images/624.bmp</file>
+        <file>QIcon/images/630.bmp</file>
+        <file>QIcon/images/632.bmp</file>
+        <file>QIcon/images/828.bmp</file>
+        <file>QIcon/images/Audio CD.ico</file>
+        <file>QIcon/images/audio_file.ico</file>
+        <file>QIcon/images/Movie Clip.ico</file>
+        <file>QIcon/images/music.ico</file>
+        <file>QIcon/images/mute.bmp</file>
+        <file>QIcon/images/Recycle Bin empty.ico</file>
+        <file>QIcon/images/volumn.bmp</file>
+        <file>QIcon/images/Wave Sound.ico</file>
+    </qresource>
+</RCC>
