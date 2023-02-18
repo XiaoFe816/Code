@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/image">
+        <file>image/01_粘贴.png</file>
+        <file>image/02_撤销.png</file>
+        <file>image/03_打开文件.png</file>
+        <file>image/04_复制.png</file>
+        <file>image/05_剪切.png</file>
+        <file>image/06_搜索.png</file>
+        <file>image/07_保存文件.png</file>
+        <file>image/08_新建文件.png</file>
+        <file>image/09_三点.png</file>
+        <file>image/10_黑帽图标.ico</file>
+        <file>image/11_白帽图标.ico</file>
+        <file>image/11_关闭文件.png</file>
+        <file>image/12_复原.png</file>
+        <file>image/头像 (12).ico</file>
+    </qresource>
+</RCC>
