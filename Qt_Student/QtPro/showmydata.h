@@ -36,6 +36,7 @@ private slots:
     void showFindData(int count,QSqlQuery &query, const QString &sql, QTableWidgetItem *item[]);
     void tableWidgetInit();
     int mySqlInit(QSqlDatabase &db, QString sqlName);
+    void sqlCheck(QSqlQuery &query, const QString &sql, const char fun[]);
 
     void on_pushButton_back_clicked();
     void on_pushButton_save_clicked();
