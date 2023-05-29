@@ -16,7 +16,7 @@ ShowMyData::ShowMyData(QWidget *parent) :
     // 此处使用Lambda表达式是因为不想添加多余且简单的槽函数，偷个懒^3^
     connect(ui->menu, &QMenu::triggered, this, [=]() {
         QMessageBox::information(this, "帮助文档", "@@@数据格式：表格数据默认居中，无序号排序且只按照学号或UID排序，总成绩不属于MYSQL的数据。\n\n"
-                                               "@@@添加数据：填写新数据时需检查学号是否与原数据冲突，以及除总成绩外的数据是否填写完成且不为空，负责保存时会弹出告警。\n\n"
+                                               "@@@添加数据：填写新数据时需检查学号是否与原数据冲突，以及除总成绩外的数据是否填写完成且不为空，否则保存时会弹出告警。\n\n"
                                                "@@@删除数据：默认只能按学号删除指定数据，删除后需显示最新数据查看数据是否已删除。\n\n"
                                                "@@@修改数据：默认只修改第一行的数据，因此想删除某行数据需和删除一样，找出指定学号才能修改信息。\n\n"
                                                "@@@查找数据；可根据下拉框和输入栏找出指定条件的数据，并于进行后续操作。\n");
@@ -31,70 +31,81 @@ ShowMyData::~ShowMyData()
     delete ui;
 }
 
+// 检查MYSQl的执行语句
+void ShowMyData::sqlCheck(QSqlQuery &query, const QString &sql,const char fun[])
+{
+    if (query.exec(sql)) {
+        qDebug() << fun << "MYSQL的语句执行成功" << endl;
+    } else {
+        qDebug() << fun << "sql语句有误" << endl;
+    }
+}
+
 // 将MYSQL的数据同步显示在表格窗口中
 void ShowMyData::showData(QTableWidgetItem *item[])
 {
     QSqlDatabase db;
-     rowSql = mySqlInit(db,"demo");
-     QSqlQuery query(db);
-     query.exec("select * from studentdata");
-     ui->tableWidget->verticalHeader()->clearFocus();
-     ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
-     ui->tableWidget->setRowCount(rowSql);
+    rowSql = mySqlInit(db,"demo");
+    QSqlQuery query(db);
+    sqlCheck(query, "select * from studentdata", __func__);
 
-     int i = 0;
-     while (query.next()) {
-         qDebug() << query.value(0).toInt()
-                  << query.value(1).toString()
-                  << query.value("性别").toString()
-                  << query.value("年龄").toInt()
-                  << query.value("语文成绩").toInt()
-                  << query.value("数学成绩").toInt()
-                  << query.value("英语成绩").toInt();
+    ui->tableWidget->verticalHeader()->clearFocus();
+    ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableWidget->setRowCount(rowSql);
 
-         // 将数据库一行的数据拷贝给表格控件
-         item[0] = new QTableWidgetItem(query.value(0).toString());
-         item[1] = new QTableWidgetItem(query.value(1).toString());
-         item[2] = new QTableWidgetItem(query.value(2).toString());
-         item[3] = new QTableWidgetItem(query.value(3).toString());
-         item[4] = new QTableWidgetItem(query.value(4).toString());
-         item[5] = new QTableWidgetItem(query.value(5).toString());
-         item[6] = new QTableWidgetItem(query.value(6).toString());
+    int i = 0;
+    while (query.next()) {
+        qDebug() << query.value(0).toInt()
+                 << query.value(1).toString()
+                 << query.value("性别").toString()
+                 << query.value("年龄").toInt()
+                 << query.value("语文成绩").toInt()
+                 << query.value("数学成绩").toInt()
+                 << query.value("英语成绩").toInt();
 
-         // 将控件添加到tableWidget并居中显示
-         item[0] ->setTextAlignment(Qt::AlignCenter);
-         ui->tableWidget->setItem(i, 0, item[0]);
-         item[1] ->setTextAlignment(Qt::AlignCenter);
-         ui->tableWidget->setItem(i, 1, item[1]);
-         item[2] ->setTextAlignment(Qt::AlignCenter);
-         ui->tableWidget->setItem(i, 2, item[2]);
-         item[3] ->setTextAlignment(Qt::AlignCenter);
-         ui->tableWidget->setItem(i, 3, item[3]);
-         item[4] ->setTextAlignment(Qt::AlignCenter);
-         ui->tableWidget->setItem(i, 4, item[4]);
-         item[5] ->setTextAlignment(Qt::AlignCenter);
-         ui->tableWidget->setItem(i, 5, item[5]);
-         item[6] ->setTextAlignment(Qt::AlignCenter);
-         ui->tableWidget->setItem(i, 6, item[6]);
+        // 将数据库一行的数据拷贝给表格控件
+        item[0] = new QTableWidgetItem(query.value(0).toString());
+        item[1] = new QTableWidgetItem(query.value(1).toString());
+        item[2] = new QTableWidgetItem(query.value(2).toString());
+        item[3] = new QTableWidgetItem(query.value(3).toString());
+        item[4] = new QTableWidgetItem(query.value(4).toString());
+        item[5] = new QTableWidgetItem(query.value(5).toString());
+        item[6] = new QTableWidgetItem(query.value(6).toString());
 
-         // 总成绩一列的数据，此数据不在Mysql数据库内，属于自定义的部分数据的求和的结果
-         int sum = query.value(4).toInt() + query.value(5).toInt() + query.value(6).toInt();
-         item[7] = new QTableWidgetItem(QString::number(sum));
-         item[7] ->setTextAlignment(Qt::AlignCenter);
-         ui->tableWidget->setItem(i, 7, item[7]);
+        // 将控件添加到tableWidget并居中显示
+        item[0] ->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget->setItem(i, 0, item[0]);
+        item[1] ->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget->setItem(i, 1, item[1]);
+        item[2] ->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget->setItem(i, 2, item[2]);
+        item[3] ->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget->setItem(i, 3, item[3]);
+        item[4] ->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget->setItem(i, 4, item[4]);
+        item[5] ->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget->setItem(i, 5, item[5]);
+        item[6] ->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget->setItem(i, 6, item[6]);
 
-         i++;
-     }
-     db.close();
-     qDebug() << "数据库数据加载完毕" << endl;
+        // 总成绩一列的数据，此数据不在Mysql数据库内，属于自定义的部分数据的求和的结果
+        int sum = query.value(4).toInt() + query.value(5).toInt() + query.value(6).toInt();
+        item[7] = new QTableWidgetItem(QString::number(sum));
+        item[7] ->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget->setItem(i, 7, item[7]);
+
+        i++;
+    }
+    db.close();
+    qDebug() << "数据库数据加载完毕" << endl;
 }
 
 // 展示执行查找语句后的数据
 void ShowMyData::showFindData(int count,QSqlQuery &query, const QString &sql,QTableWidgetItem *item[])
 {
-    query.exec(sql);
+    sqlCheck(query, sql, __func__);
     // 清空表格内容
-    ui->tableWidget->verticalHeader()->clearFocus();
+    ui->tableWidget->setRowCount(0);
     //设置表格为双击编辑模式
     ui->tableWidget->setEditTriggers(QAbstractItemView::DoubleClicked);
     for (int i = 0; i < count; i++) {
@@ -180,7 +191,7 @@ int ShowMyData::mySqlInit(QSqlDatabase &db, QString sqlName)
     int row = 0;
     QSqlQuery query(db);
     // 执行查找语句，找出studentdata数据表的所有数据
-    query.exec("select * from studentdata");
+    sqlCheck(query, "select * from studentdata", __func__);
     while(query.next()) {
         // 行数自增
         row++;
@@ -249,20 +260,16 @@ void ShowMyData::on_pushButton_del_clicked()
 
     if (0 == findFiler) {
         QString sql_0 = QString("delete from studentdata where 学号 = '%1';").arg(curText);
-        qDebug() << sql_0 << endl;
-        query.exec(sql_0);
+        sqlCheck(query, sql_0, __func__);
     } else if (1 == findFiler) {
         QString sql_1 = QString("delete from studentdata where 姓名 = '%1';").arg(curText);
-        qDebug() << sql_1 << endl;
-        query.exec(sql_1);
+        sqlCheck(query, sql_1, __func__);
     } else if (2 == findFiler) {
         QString sql_2 = QString("delete from studentdata where 性别 = '%1';").arg(curText);
-        qDebug() << sql_2 << endl;
-        query.exec(sql_2);
+        sqlCheck(query, sql_2, __func__);
     } else if (3 == findFiler) {
         QString sql_3 = QString("delete from studentdata where 年龄 = '%1';").arg(curText);
-        qDebug() << sql_3 << endl;
-        query.exec(sql_3);
+        sqlCheck(query, sql_3, __func__);
     }
     db.close();
 }
@@ -290,7 +297,7 @@ void ShowMyData::on_pushButton_update_clicked()
     QString sql = QString("update studentdata set 姓名 = '%1',性别 = '%2',年龄 = %3,语文成绩 = %4,数学成绩 = %5,"
                           "英语成绩 = %6 where 学号 = %7").arg(v.at(1)).arg(v.at(2)).arg(v.at(3)).arg(v.at(4)).arg(v.at(5)).arg(v.at(6)).arg(v.at(0));
     qDebug() << sql << endl;
-    query.exec(sql);
+    sqlCheck(query, sql, __func__);
     db1.close();
 }
 
@@ -328,9 +335,7 @@ void ShowMyData::on_pushButton_save_clicked()
         v.push_back(temp);
     }
 
-    query.exec("select * from studentdata");
-    qDebug() << __func__ << endl;
-
+    sqlCheck(query, "select * from studentdata", __func__);
     // 判断新增数据的学号是否已存在
     while(query.next()) {
         if (query.value(0).toString() == v.at(0)) {
@@ -340,22 +345,22 @@ void ShowMyData::on_pushButton_save_clicked()
         }
     }
 
-    QString sql = QString("insert into studentdata (学号, 姓名, 性别, 年龄, 语文成绩, 数学成绩,"
-                          "英语成绩) values(%1, '%2', '%3', %4, %5, %6, %7);").arg(v.at(0)).arg(v.at(1)).arg(v.at(2)).arg(v.at(3)).arg(v.at(4)).arg(v.at(5)).arg(v.at(6));
-    query.exec(sql);
+    QString sql = QString("insert into studentdata (学号, 姓名, 性别, 年龄, 语文成绩, 数学成绩, 英语成绩) values(%1, '%2', '%3', %4, %5, %6,"
+                          "%7);").arg(v.at(0)).arg(v.at(1)).arg(v.at(2)).arg(v.at(3)).arg(v.at(4)).arg(v.at(5)).arg(v.at(6));
+    qDebug() << sql << endl;
+    sqlCheck(query, sql, __func__);
 
     // 保存后设置表格不可编辑并置灰保存按钮
     ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     QMessageBox::information(this, "保存成功", "恭喜你，保存数据成功");
     ui->pushButton_save->setEnabled(false);
-    qDebug() << sql << endl;
-    qDebug() << __func__ << endl;
     db.close();
 }
 
 // 实时更新并显示数据到表格中
 void ShowMyData::on_pushButton_data_clicked()
 {
+    ui->pushButton_save->setEnabled(false);
     showData(item);
 }
 
@@ -374,32 +379,28 @@ void ShowMyData::on_pushButton_find_clicked()
     int count = 0;
     if (0 == findFiler) {
         QString sql_0 = QString("select * from studentdata where 学号 = '%1';").arg(curText);
-        qDebug() << sql_0 << endl;
-        query.exec(sql_0);
+        sqlCheck(query, sql_0, __func__);
         while (query.next()) {
             count++;
         }
         showFindData(count, query, sql_0, item);
     } else if (1 == findFiler) {
         QString sql_1 = QString("select * from studentdata where 姓名 = '%1';").arg(curText);
-        qDebug() << sql_1 << endl;
-        query.exec(sql_1);
+        sqlCheck(query, sql_1, __func__);
         while (query.next()) {
             count++;
         }
         showFindData(count, query, sql_1, item);
     } else if (2 == findFiler) {
         QString sql_2 = QString("select * from studentdata where 性别 = '%1';").arg(curText);
-        qDebug() << sql_2 << endl;
-        query.exec(sql_2);
+        sqlCheck(query, sql_2, __func__);
         while (query.next()) {
             count++;
         }
         showFindData(count, query, sql_2, item);
     } else if (3 == findFiler) {
         QString sql_3 = QString("select * from studentdata where 年龄 = '%1';").arg(curText);
-        qDebug() << sql_3 << endl;
-        query.exec(sql_3);
+        sqlCheck(query, sql_3, __func__);
         while (query.next()) {
             count++;
         }
